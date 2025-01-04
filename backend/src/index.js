@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ limit: '500kb', extended: true }));
 
 app.use(cookieParser());
 app.use(cors({
-    origin:import.meta.env.MODE==="development" ? "http://localhost:5173": "/",
+    origin:"http://localhost:5173",
     credentials:true,
 }))
 
