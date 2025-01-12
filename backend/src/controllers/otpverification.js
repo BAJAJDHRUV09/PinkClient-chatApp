@@ -15,7 +15,12 @@ export const signup = async (req,res) => {
         }
         
         //generating otp
-        let otp = otpGenerator.generate(8);
+        let otp = otpGenerator.generate(4, { 
+          upperCaseAlphabets: false, 
+          specialChars: false, 
+          lowerCaseAlphabets: false, 
+          digits: true 
+      });
 
         //let's hash the password
         const saltRounds=10;
