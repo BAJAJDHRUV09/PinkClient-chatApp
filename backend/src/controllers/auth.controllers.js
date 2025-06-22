@@ -17,9 +17,14 @@ export const signup = async (req,res) => {
         }
         
         //generating otp
-        let otp = otpGenerator.generate(8);
+        let otp = otpGenerator.generate(4, { 
+          upperCaseAlphabets: false, 
+          specialChars: false, 
+          lowerCaseAlphabets: false, 
+          digits: true 
+      });
 
-        //let's hash the password
+        //let's hash the password & add salt(which is a kind of random data that enhances protection)
         const saltRounds=10;
         const salt = await bcrypt.genSalt(saltRounds);
         const hashedPassword = await bcrypt.hash(password,salt);
@@ -29,7 +34,9 @@ export const signup = async (req,res) => {
             process.env.JWT_SECRET,
             { expiresIn: '5m' } // Token expires in 5 minutes
           );
-
+          
+        // we'll store the generated otp in jwt_token and we'll verify that
+        // like otp verification will be done by that
         try {
             const mailResponse = await mailSender(
               email,

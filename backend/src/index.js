@@ -14,20 +14,23 @@ const port = process.env.PORT;
 const _dirname = path.resolve();
 
 app.use(bodyParser.json({ limit: '500kb' }));
+// extended:true handles complex DS
 app.use(bodyParser.urlencoded({ limit: '500kb', extended: true }));
 
 app.use(cookieParser());
 app.use(cors({
     origin:"http://localhost:5173",
+    // without credentials:true, browser block cookies and auth-headers in cross origin req
     credentials:true,
 }))
 
 app.use("/api/auth",authRoutes);
 app.use("/api/messages",messageRoutes);
 
+// static file requests in production
 if(process.env.NODE_ENV === "production"){
     app.use(express.static(path.join(_dirname,"../frontend/dist")));
-    
+    // unknown path redirected to main reeact app
     app.get("*",(req,res) => {
         res.sendFile(path.join(_dirname,"../frontend","dist","index.html"));
     })

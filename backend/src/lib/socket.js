@@ -3,6 +3,7 @@ import http from "http";
 import express from "express";
 
 const app = express();
+// this server is required because socket.io needs to work with raw http requests not express
 const server = http.createServer(app);
 
 const io = new Server(server,{
@@ -12,16 +13,17 @@ const io = new Server(server,{
 })
 
 //so for storing online users..it's like an object
-//userId:socketId
 const userSocketMap = {};
 
 export function getReceiverSocketId(userId) {
     return userSocketMap[userId];
 }
 
+//connection is special event emitted by Socket.io
 io.on("connection",(socket)=>{
     console.log("A user is connected",socket.id);
     
+    // handshake.query -- It contains metadata sent by the frontend during connection
     const userId = socket.handshake.query.userId;
     //if user is online adding it to that object list
     if(userId) userSocketMap[userId]=socket.id;
